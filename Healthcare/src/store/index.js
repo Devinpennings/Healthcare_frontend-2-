@@ -18,7 +18,7 @@ const CHATSESSION_CHANGED = 'CHATSESSION_CHANGED';
 const CHAT_UPDATE = 'CHAT_UPDATE';
 const NEW_MESSAGE = 'NEW_MESSAGE';
 
-const API_URL = 'http://35.195.241.255:8081/api';
+const API_URL = 'http://35.195.241.255:8081/api/';
 
 import createPersistedState from 'vuex-persistedstate'
 
