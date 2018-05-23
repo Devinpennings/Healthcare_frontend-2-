@@ -26,6 +26,7 @@
         </template>
       </planner>
       <checker v-if="openComponent === 'checker'"/>
+      <storage v-if="openComponent === 'storage'"></storage>
     </div>
   </div>
 </template>
