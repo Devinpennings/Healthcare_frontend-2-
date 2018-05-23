@@ -1,5 +1,7 @@
 <template>
   <div id="parent">
+    <patientchat v-if="getActiveUser.type === 'patient'"/>
+    <patientchatwindow v-if="openChat && getActiveUser.type === 'patient'" class="chatFloat"/>
     <router-view/>
     <navbar>NOTHING</navbar>
     <sidebar>NOTHING</sidebar>
@@ -22,7 +24,7 @@
                @eventClick="eventClick"
                @dayClick="dayClick"
                @moreClick="moreClick">
-        <template slot="fc-event-card" scope="p">
+        <template slot="fc-event-card" slot-scope="p">
           <p>{{ p.event.title }}</p>
         </template>
       </planner>
