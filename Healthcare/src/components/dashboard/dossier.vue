@@ -75,6 +75,10 @@
         <b-button @click="downloadDiagnosis">
           <i class="ion-ios-cloud-download"></i> Download dossier
         </b-button>
+        <b-button @click="showTestModal">
+          <i class="ion-ios-cloud-download"></i> Download dossier
+        </b-button>
+
       </div>
     </div>
   </div>
@@ -91,6 +95,13 @@
       },
       data () {
         return {
+          test: 'false',
+          testMedicijnen: [],
+          testhoeveelheid: '',
+          testnaam: 'Medicijn',
+          testNote: '',
+          testSelected: '',
+          filter: null,
           sortBy: 'date',
           sortDesc: false,
           fields: {
@@ -101,6 +112,12 @@
             },
             show_details: {label: 'Details'},
           },
+          testFields: {
+            id: {label: 'ID', sortable: true},
+            name: {label: 'Naam', sortable: true},
+            stock: {label: "Op voorraad", sortable: true},
+            actions: {label: ''},
+          },
           isBusy: false,
           items: [],
           patient: this.patientid,
@@ -110,6 +127,14 @@
           },
           isLoading: false,
           user: this.$store.getters.user
+        }
+      },
+      computed: {
+        sortOptions () {
+          // Create an options list from our fields
+          return this.testFields
+            .filter(f => f.sortable)
+            .map(f => { return { text: f.label, value: f.key } })
         }
       },
       methods: {
@@ -126,6 +151,17 @@
         },
         showModal (button) {
           this.$root.$emit('bv::show::modal', 'addDiagnoseModal', button)
+        },
+        showTestModal (button) {
+          this.isBusy = true;
+          this.$store.dispatch("getRequest", "medicines").then(response => {
+            this.isBusy = false;
+            console.log(response);
+            // this.user = response;
+            this.testMedicijnen = response;
+            this.isLoading = false;
+            this.$root.$emit('bv::show::modal', 'medicijnVoorschrijven', button)
+          });
         },
         newDiagnose () {
           this.isBusy = true;
