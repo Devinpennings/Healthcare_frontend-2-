@@ -18,7 +18,7 @@ const CHATSESSION_CHANGED = 'CHATSESSION_CHANGED';
 const CHAT_UPDATE = 'CHAT_UPDATE';
 const NEW_MESSAGE = 'NEW_MESSAGE';
 
-const API_URL = 'http://130.211.53.35:8081/api/';
+const API_URL = 'http://35.195.241.255:8081/api/';
 
 import createPersistedState from 'vuex-persistedstate'
 
@@ -176,6 +176,28 @@ const Store = new Vuex.Store({
           console.log(info.body)
           axios({
             method: 'post',
+            url: API_URL + info.url,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer' + localStorage.getItem("healthcare"),
+            },
+            data: info.body,
+          }).then(function (response) {
+            resolve(response.data);
+          }).catch(function (error) {
+            resolve(error);
+          });
+        }, 1000);
+      });
+    },
+    deleteRequest({commit}, info) {
+      commit(PENDING);
+      return new Promise(resolve => {
+        setTimeout(() => {
+          console.log(info.url)
+          console.log(info.body)
+          axios({
+            method: 'delete',
             url: API_URL + info.url,
             headers: {
               'Content-Type': 'application/json',

@@ -53,6 +53,7 @@ import ArtsSwitch from "./ArtsSwitch.vue";
 import DoctorChat from '../chat/DoctorChat.vue';
 import PatientChat from '../chat/PatientChat.vue';
 import PatientChatWindow from '../chat/PatientChatWindow.vue';
+import Storage from './MedicineStorage.vue'
 
 
 export default {
@@ -88,6 +89,8 @@ export default {
     'doctorchat' : DoctorChat,
     'patientchat' : PatientChat,
     'patientchatwindow' : PatientChatWindow,
+    'storage' : Storage,
+
 
   },
   computed: {
@@ -96,6 +99,9 @@ export default {
     },
     getDate(){
       return this.day;
+    },
+    getActiveUser(){
+      return this.$store.getters.user
     }
   },
   created(){

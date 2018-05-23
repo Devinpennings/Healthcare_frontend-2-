@@ -41,7 +41,7 @@
             </b-card>
           </template>
           <template slot="actions" slot-scope="row">
-            <b-form-checkbox :value="row.item" :id="row.item.id" v-model="testSelected" v-on:change="selectMedicine(row.item)"></b-form-checkbox>
+            <b-form-checkbox :value="row.item" :id="row.item.id" v-model="testSelected" v-on:change="selectMedicine(row.item.id)"></b-form-checkbox>
           </template>
         </b-table>
       </form>
@@ -70,53 +70,53 @@
       </div>
       <p>Klik op ok om te bevestigen</p>
     </b-modal>
-  <form id="form-list-client2">
-    <b-row>
-      <b-col md="6" class="my-1">
-        <b-form-group horizontal label="Filter" class="mb-0">
-          <b-input-group>
-            <b-form-input v-model="filter" placeholder="Typ om te zoeken" ></b-form-input>
-            <b-input-group-append>
-              <b-btn :disabled="!filter" @click="filter = ''" variant="primary">Clear</b-btn>
-            </b-input-group-append>
-          </b-input-group>
-        </b-form-group>
-      </b-col>
-      <b-col md="6" class="my-1">
-        <div class="pull-right" style="padding-top: 10px">
-          <b-button size="sm" v-on:click="changeComponent('createPatients')" variant="primary">
-            <i class="ion-ios-plus"></i> Patient Aanmaken
+    <form id="form-list-client2">
+      <b-row>
+        <b-col md="6" class="my-1">
+          <b-form-group horizontal label="Filter" class="mb-0">
+            <b-input-group>
+              <b-form-input v-model="filter" placeholder="Typ om te zoeken" ></b-form-input>
+              <b-input-group-append>
+                <b-btn :disabled="!filter" @click="filter = ''" variant="primary">Clear</b-btn>
+              </b-input-group-append>
+            </b-input-group>
+          </b-form-group>
+        </b-col>
+        <b-col md="6" class="my-1">
+          <div class="pull-right" style="padding-top: 10px">
+            <b-button size="sm" v-on:click="changeComponent('createPatients')" variant="primary">
+              <i class="ion-ios-plus"></i> Patient Aanmaken
+            </b-button>
+          </div>
+        </b-col>
+      </b-row>
+      <b-table :sort-by.sync="sortBy"
+               :sort-desc.sync="sortDesc"
+               :items="patients"
+               :busy.sync="isBusy"
+               :fields="fields"
+               :filter="filter"
+               style="width: 100%;"
+               @filtered="onFiltered"
+      >
+        <template slot="actions" slot-scope="row">
+          <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->
+          <b-button size="sm" v-if="user.type === 'doctor'" v-on:click="changeComponentUpdate('personalDossier', row.item.user_id)" variant="primary">
+            <i style="font-size:24px" class="fa">&#xf06e;</i>
           </b-button>
-        </div>
-      </b-col>
-    </b-row>
-    <b-table :sort-by.sync="sortBy"
-             :sort-desc.sync="sortDesc"
-             :items="patients"
-             :busy.sync="isBusy"
-             :fields="fields"
-             :filter="filter"
-             style="width: 100%;"
-             @filtered="onFiltered"
-    >
-      <template slot="actions" slot-scope="row">
-        <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->
-        <b-button size="sm" v-if="user.type === 'doctor'" v-on:click="changeComponentUpdate('personalDossier', row.item.user_id)" variant="primary">
-          <i style="font-size:24px" class="fa">&#xf06e;</i>
-        </b-button>
-        <b-button size="sm" v-if="user.type === 'doctor'" v-on:click="showTestModal(row.item)" variant="primary">
-          <i style="font-size:24px" class="fa">&#xf0f9;</i>
-        </b-button>
-        <b-button size="sm" v-on:click="changeComponent('updatePatient', row.item)" variant="primary">
+          <b-button size="sm" v-if="user.type === 'doctor'" v-on:click="showTestModal(row.item.user_id)" variant="primary">
+            <i style="font-size:24px" class="fa">&#xf0f9;</i>
+          </b-button>
+          <b-button size="sm" v-on:click="changeComponent('updatePatient', row.item)" variant="primary">
             <i style="font-size:24px" class="fa">&#xf044;</i>
-        </b-button>
-        <b-button size="sm" variant="primary">
-          <i style="font-size:24px" class="fa">&#xf014;</i>
-        </b-button>
-      </template>
-    </b-table>
-  </form>
- </div>
+          </b-button>
+          <b-button size="sm" v-on:click="deletePatient(row.item.user_id)" variant="primary">
+            <i style="font-size:24px" class="fa">&#xf014;</i>
+          </b-button>
+        </template>
+      </b-table>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -132,6 +132,7 @@
         testMedicijnen: [],
         testhoeveelheid: '',
         testnaam: 'Medicijn',
+        testpatient: '',
         testNote: '',
         testSelected: '',
         fields: {
@@ -183,9 +184,19 @@
         console.log(object);
         this.testnaam = object.name;
       },
+      deletePatient(patient) {
+        this.isBusy = true;
+        console.log(patient);
+        this.$store.dispatch('deleteRequest', {
+          url: 'patients/' + patient,
+        })
+      },
       createPrescription() {
+        console.log(this.testSelected);
+        console.log(this.testpatient);
+        console.log(this.testhoeveelheid);
         this.$store.dispatch('postRequest', {
-          url: 'medicines/order/1?quantity=1' + this.testhoeveelheid + '&patient_id=' + this.patient.user_id + '&instructions=' + this.testNote,
+          url: 'medicines/order/' + this.testSelected.id + '?quantity=' + this.testhoeveelheid + '&patient_id=' + this.testpatient + '&instructions=' + this.testNote,
         })
       },
       getAge(age) {
@@ -195,17 +206,6 @@
       },
       getItems() {
         return this.items;
-      },
-      showTestModal(button) {
-        this.isBusy = true;
-        this.$store.dispatch("getRequest", "medicines").then(response => {
-          this.isBusy = false;
-          console.log(response);
-          // this.user = response;
-          this.testMedicijnen = response;
-          this.isLoading = false;
-          this.$root.$emit('bv::show::modal', 'medicijnVoorschrijven', button)
-        });
       },
       newDiagnose() {
         this.isBusy = true
@@ -221,18 +221,11 @@
           this.loadDiagnosis();
         })
       },
-      selectMedicine(object) {
-        this.naam = object.name;
-      },
-      createPrescription() {
-        this.$store.dispatch('postRequest', {
-          url: 'medicines/order/1?quantity=1' + this.hoeveelheid + '&patient_id=' + this.activePatient.user_id + '&instructions=' + this.Note,
-        })
-      },
       showModal(button) {
         this.$root.$emit('bv::show::modal', 'addDiagnoseModal', button)
       },
-      showTestModal(button) {
+      showTestModal(patient) {
+        this.testpatient = patient;
         this.isBusy = true;
         this.$store.dispatch("getRequest", "medicines").then(response => {
           this.isBusy = false;
@@ -240,7 +233,7 @@
           // this.user = response;
           this.testMedicijnen = response;
           this.isLoading = false;
-          this.$root.$emit('bv::show::modal', 'medicijnVoorschrijven', button)
+          this.$root.$emit('bv::show::modal', 'medicijnVoorschrijven')
         });
       },
       changeComponent(component) {
@@ -253,13 +246,13 @@
         this.$parent.changeComponent(component, patient);
       },
       checkMedicineAmount(){
-       if(this.testhoeveelheid > this.testSelected.stock){
-        this.testhoeveelheid = this.testSelected.stock
-       }
-       if(this.testhoeveelheid < 0){
-         this.testhoeveelheid = 0
-       }
-       return true;
+        if(this.testhoeveelheid > this.testSelected.stock){
+          this.testhoeveelheid = this.testSelected.stock
+        }
+        if(this.testhoeveelheid < 0){
+          this.testhoeveelheid = 0
+        }
+        return true;
       },
       dateConverter(values){
         let entries = values;
