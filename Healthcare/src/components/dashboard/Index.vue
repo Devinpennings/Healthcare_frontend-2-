@@ -96,6 +96,9 @@ export default {
     },
     getDate(){
       return this.day;
+    },
+    getActiveUser(){
+      return this.$store.getters.user;
     }
   },
   created(){

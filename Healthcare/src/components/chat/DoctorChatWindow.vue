@@ -18,8 +18,14 @@
     <div class="messagesWrapper">
       <div class="messages" ref="mess">
         <div v-for="message in chat.messages">
-          <div class="bubbleme" v-if="message.sender.user_id==user.user_id"> {{ message.message }} <div class="timeStamp">{{ message.date.toTimeString().split(':')[0]}}:{{message.date.toTimeString().split(':')[1] }}</div></div>
-          <div class="bubbleyou" v-else> {{ message.message }} <div class="timeStamp">{{ message.date.toTimeString().split(':')[0]}}:{{message.date.toTimeString().split(':')[1] }}</div></div>
+          <div class="bubbleme" v-if="message.sender.user_id==user.user_id"> 
+            <img v-if="message.type==='image'" height="150" v-bind:src="message.message">
+            <div v-else>{{ message.message }} </div>
+            <div class="timeStamp">{{ message.date.toTimeString().split(':')[0]}}:{{message.date.toTimeString().split(':')[1] }}</div></div>
+          <div class="bubbleyou" v-else> 
+            <img v-if="message.type==='image'" height="150" v-bind:src="message.message">
+            <div v-else>{{ message.message }} </div>
+            <div class="timeStamp">{{ message.date.toTimeString().split(':')[0]}}:{{message.date.toTimeString().split(':')[1] }}</div></div>
         </div>
       </div>
     </div>

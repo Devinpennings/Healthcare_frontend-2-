@@ -3082,7 +3082,7 @@ a > code {
   overflow-x: hidden;
   overflow-y: scroll;
   height: 100%;
-  padding-bottom: 14px;
+  padding-bottom: 34px;
 }
 
 .chat ::-webkit-scrollbar {
@@ -3125,10 +3125,11 @@ a > code {
 
 .chat .messages .bubbleyou {
   position: relative;
-  width: auto;
+  width: min-content;
   max-width: 75%;
   height: auto;
   padding: 2px;
+  overflow: visible;
   background: grey;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
