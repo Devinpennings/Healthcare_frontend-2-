@@ -1,21 +1,32 @@
 <template>
   <div id="parent">
-    <patientchat v-if="getActiveUser.type === 'patient'"></patientchat>
-    <patientchatwindow v-if="openChat && getActiveUser.type === 'patient'" class="chatFloat"></patientchatwindow>
     <router-view/>
-    <navbar></navbar>
-    <sidebar></sidebar>
+    <navbar>NOTHING</navbar>
+    <sidebar>NOTHING</sidebar>
     <div class="dashboardContent">
-      <dossier :patientid="getUser" v-if="openComponent === 'personalDossier'"></dossier>
-      <createm v-if="openComponent === 'createWerknemer'"></createm>
-      <createp v-if="openComponent === 'createPatients'"></createp>
-      <updatem :userId="userId" :user="getUser" v-if="openComponent === 'updateWerknemer'"></updatem>
-      <updatep :userId="userId" v-if="openComponent === 'updatePatient'"></updatep>
-      <news v-if="openComponent === 'home'"></news>
-      <viewemp v-if="openComponent === 'viewWerknemers'"></viewemp>
-      <news v-if="openComponent === 'home'"></news>
-      <viewpat v-if="openComponent === 'viewPatients'"></viewpat>
-      <doctorchat v-if="openComponent === 'doctorChat'"></doctorchat>
+      <dossier :patientid="getUser" v-if="openComponent === 'personalDossier'"/>
+      <calendar :patientid="getUser" v-if="openComponent === 'calendar'"/>
+      <createm v-if="openComponent === 'createWerknemer'"/>
+      <createp v-if="openComponent === 'createPatients'"/>
+      <updatem :employeeId="getUser"  v-if="openComponent === 'updateWerknemer'"/>
+      <updatep :patientId="getUser" v-if="openComponent === 'updatePatient'"/>
+      <news v-if="openComponent === 'home'"/>
+      <viewemp v-if="openComponent === 'viewWerknemers'"/>
+      <viewpat v-if="openComponent === 'viewPatients'"/>
+      <appointmentlist :day="getDate" v-if="openComponent === 'appointmentlist'"/>.
+      <artsswitch v-if="openComponent === 'artsswitch'"/>
+      <planner v-if="openComponent === 'planner'" class="test-fc" :events="fcEvents"
+               first-day='1' locale="nl"
+               @changeMonth="changeMonth"
+               @eventClick="eventClick"
+               @dayClick="dayClick"
+               @moreClick="moreClick">
+        <template slot="fc-event-card" scope="p">
+          <p>{{ p.event.title }}</p>
+        </template>
+      </planner>
+      <checker v-if="openComponent === 'checker'"/>
+      <storage v-if="openComponent === 'storage'"></storage>
     </div>
   </div>
 </template>
@@ -31,22 +42,28 @@ import CreateP from "./CreateP";
 import News from './News.vue'
 import ViewEmp from './ViewEmp.vue'
 import ViewPat from './ViewPat.vue'
-import DoctorChat from '../chat/DoctorChat.vue'
-import PatientChat from '../chat/PatientChat.vue'
-import PatientChatWindow from '../chat/PatientChatWindow.vue'
+import Calendar from './Calendar.vue'
+import Planner from './Planner.vue';
+import AppointmentChecker from "./AppointmentChecker";
+import AppointmentList from "./AppointmentList.vue";
+import ArtsSwitch from "./ArtsSwitch.vue";
+
 
 export default {
+
 
   name: 'app',
   data() {
     return {
       openComponent: 'home',
-      openChat: false,
-      userId: this.$store.getters.user.userId,
+      userId: this.$store.getters.user.user_id,
       user: '',
+      fcEvents: Planner.events,
+      day: ''
     }
   },
   components: {
+    'calendar': Calendar,
     'navbar' : Navbar,
     'sidebar' : Sidebar,
     'dossier' : Dossier,
@@ -57,36 +74,54 @@ export default {
     'news' : News,
     'viewemp' : ViewEmp,
     'viewpat' : ViewPat,
-    'doctorchat' : DoctorChat,
-    'patientchat' : PatientChat,
-    'patientchatwindow' : PatientChatWindow,
+    'planner' : Planner,
+    'checker' : AppointmentChecker,
+    'appointmentlist' : AppointmentList,
+    'artsswitch' : ArtsSwitch,
+
   },
   computed: {
     getUser(){
       return this.user;
     },
-    getActiveUser(){
-      return this.$store.getters.user
+    getDate(){
+      return this.day;
     }
+  },
+  created(){
+
   },
   methods: {
     changeComponent (component, user) {
-      console.log('Changing component to: ' + component)
+      console.log('Changing component to: ' + component);
       this.openComponent = component;
-      this.user = user;
+      if(user === undefined)
+      {
+        this.user = this.$store.getters.user
+      }
+      else {
+        this.user = user;
+      }
     },
-    toggleChat (){
-      this.openChat = !this.openChat
+    changeComponent2(component) {
+      this.openComponent = component;
     },
-    setupSockets(){
-      this.$store.dispatch('setupSockets', this.$store.getters.user)
+    changeMonth(start, end, current) {
+      console.log('changeMonth', start.format(), end.format(), current.format())
+    },
+    eventClick(event, jsEvent, pos) {
+      console.log('eventClick', event, jsEvent, pos)
+    },
+    dayClick(day, jsEvent) {
+      this.day = day._d;
+      console.log('Meegegeven datum:');
+      console.log(this.day);
+      this.changeComponent2('appointmentlist');
+      console.log('dayClick', day, jsEvent)
+    },
+    moreClick(day, events, jsEvent) {
+      console.log('moreCLick', day, events, jsEvent)
     }
-
-  },
-  created() {
-    if(this.$store.getters.user.type == 'doctor'){
-      this.setupSockets();
-    }  
   }
 }
 </script>
@@ -98,5 +133,4 @@ export default {
 <style>@import"../../assets/style/style.sea.css";</style>
 <style>@import"../../assets/icons-reference/ionicons.css";</style>
 <style>@import"../../assets/style/landing.css";</style>
-<style>@import"http://fontawesome.io/assets/font-awesome/css/font-awesome.css";</style>
-<style>@import"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css";</style>
+
