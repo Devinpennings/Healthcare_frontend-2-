@@ -101,7 +101,7 @@ export default {
       return this.day;
     },
     getActiveUser(){
-      return this.$store.getters.user
+      return this.$store.getters.user;
     }
   },
   created(){
