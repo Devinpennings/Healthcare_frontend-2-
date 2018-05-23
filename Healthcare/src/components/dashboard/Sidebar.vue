@@ -22,6 +22,7 @@
           <li><a v-on:click="changeComponent('viewPatients')" style="cursor:pointer"><i class="ion-person"></i>Patienten</a></li>
           <li><a v-on:click=" changeComponent('planner')" style="cursor:pointer"><i class="ion-ios-calendar"></i>Kalender</a></li>
           <li><a v-on:click="changeComponent('checker')" style="cursor:pointer"><i class="ion-ios-bookmarks"></i>Planning goedkeuren</a></li>
+          <li><a v-on:click="changeComponent('doctorChat')" style="cursor:pointer"><i class="ion-chatbubble"></i>Chat</a></li>
         </div>
 
           <div v-if="user.type === 'doctorEmployee'">
