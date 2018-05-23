@@ -47,6 +47,9 @@ import Planner from './Planner.vue';
 import AppointmentChecker from "./AppointmentChecker";
 import AppointmentList from "./AppointmentList.vue";
 import ArtsSwitch from "./ArtsSwitch.vue";
+import DoctorChat from '../chat/DoctorChat.vue';
+import PatientChat from '../chat/PatientChat.vue';
+import PatientChatWindow from '../chat/PatientChatWindow.vue';
 
 
 export default {
@@ -58,6 +61,7 @@ export default {
       openComponent: 'home',
       userId: this.$store.getters.user.user_id,
       user: '',
+      openChat: false,
       fcEvents: Planner.events,
       day: ''
     }
@@ -78,6 +82,9 @@ export default {
     'checker' : AppointmentChecker,
     'appointmentlist' : AppointmentList,
     'artsswitch' : ArtsSwitch,
+    'doctorchat' : DoctorChat,
+    'patientchat' : PatientChat,
+    'patientchatwindow' : PatientChatWindow,
 
   },
   computed: {
@@ -121,6 +128,17 @@ export default {
     },
     moreClick(day, events, jsEvent) {
       console.log('moreCLick', day, events, jsEvent)
+    },
+    toggleChat (){
+      this.openChat = !this.openChat
+    },
+    setupSockets(){
+      this.$store.dispatch('setupSockets', this.$store.getters.user)
+    }
+  },
+  created() {
+    if(this.$store.getters.user.type == 'doctor'){
+      this.setupSockets();
     }
   }
 }
