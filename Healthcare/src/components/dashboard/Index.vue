@@ -15,6 +15,7 @@
       <viewpat v-if="openComponent === 'viewPatients'"/>
       <appointmentlist :day="getDate" v-if="openComponent === 'appointmentlist'"/>.
       <artsswitch v-if="openComponent === 'artsswitch'"/>
+      <doctorchat v-if="openComponent === 'doctorChat'"/>
       <planner v-if="openComponent === 'planner'" class="test-fc" :events="fcEvents"
                first-day='1' locale="nl"
                @changeMonth="changeMonth"
