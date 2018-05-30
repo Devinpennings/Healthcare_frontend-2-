@@ -293,11 +293,8 @@
               price: this.form.price,
             }
           }).then(() => {
-          this.$store.dispatch(("getRequest", 'medicines').then((response) => {
-            this.isBusy = false;
-                this.medicine = response;
-                this.totalRows = this.medicine.length
-          }))})
+          this.getMedicine();
+          })
         },
         giveMedicine(order){
           console.log(order);
@@ -312,6 +309,18 @@
               console.log(response);
             });
           })
+        },
+        getMedicine(){
+          this.isBusy = true;
+          this.$store.dispatch("getRequest", 'medicines').then((response) => {
+            this.isBusy = false;
+            this.medicine = response;
+            this.totalRows = this.medicine.length;
+        });
+          this.$store.dispatch("getRequest", 'prescriptions').then((response) => {
+            this.orders = response;
+            console.log(response);
+          });
         }
       },
       components: {

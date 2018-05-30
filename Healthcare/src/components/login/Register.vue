@@ -41,6 +41,15 @@
                   </label>
                 </div>
             </div>
+              <div class="row py-3">
+                <input
+                  style="display: none"
+                  type="file"
+                  v-on:change="onFileChanged"
+                  ref="fileInput">
+                <button v-on:click="$refs.fileInput.click()">Kies een foto</button>
+                <button v-on:click="onUpload">Upload</button>
+              </div>
             <p v-if="errors.length">
               <b>De volgende fouten traden op:</b>
               <ul>
@@ -77,6 +86,7 @@
         wachtwoord: null,
         wachtwoordCheck: null,
         token: this.$route.query,
+        selectedFile: null
       }
     },
     created (){
@@ -113,6 +123,12 @@
         }).then(response => {
           this.$router.push('login');
         });
+      },
+      onFileChanged (event) {
+        const file = event.target.files[0]
+      },
+      onUpload() {
+        // upload file
       }
     },
     components: {
