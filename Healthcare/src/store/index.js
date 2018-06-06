@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import io from 'socket.io-client';
 
+
 Vue.use(Vuex)
 
 const LOGIN = "LOGIN";
@@ -261,7 +262,7 @@ const Store = new Vuex.Store({
         chats: [],
       }
 
-      let socket = io('37.97.247.182:3000')
+      let socket = io('37.97.247.182:3000', {transports: ['websocket'], upgrade: false})
       chatSession.socket = socket;
 
       socket.on('connect', function() {
