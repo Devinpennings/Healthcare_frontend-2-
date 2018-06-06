@@ -1,5 +1,7 @@
 <template>
   <section class="forms">
+    <div class="loader" v-if="isBusy" ><loader></loader></div>
+    <div v-if="!isBusy">
     <div class="dashboardContentForms">
       <div class="container">
         <!-- Page Header-->
@@ -28,8 +30,12 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-2 form-control-label">Geboortedatum</label>
-            <datepicker placeholder="Selecteer een Datum"  v-model="birthdate" v-on:click.capture="checkForm">NOTHING</datepicker>
+              <b-container fluid>
+                <b-row class="my-1" v-for="type in types" :key="type">
+                  <label class="col-sm-2 form-control-label">Geboortedatum</label>
+                  <b-col  sm="10"><b-form-input v-model="birthdate" :id="`type-${type}`" :type="type"></b-form-input></b-col>
+                </b-row>
+              </b-container>
           </div>
           <div class="form-group row">
             <label class="col-sm-2 form-control-label">Geslacht</label>
@@ -82,11 +88,13 @@
         </div>
       </div>
     </div>
+    </div>
   </section>
 </template>
 
 <script>
   import Datepicker from "../Datepicker"
+  import Loader from "../loader.vue"
 
   export default {
     name: "createp",
@@ -98,6 +106,7 @@
         lname:'',
         email:'',
         birthdate:'',
+        isBusy:false,
         geslacht:'',
         city:'',
         street:'',
@@ -106,14 +115,19 @@
         options: [
           { text: 'Man', value: 'Man' },
           { text: 'Vrouw', value: 'Vrouw' }
-        ]
+        ],
+        types: [
+          'date',
+        ],
       }
     },
     components:{
-      'datepicker' : Datepicker
+      'datepicker' : Datepicker,
+      'loader' : Loader
     },
     methods: {
       create() {
+        this.isBusy = true;
         this.$store.dispatch('postRequest', {
           url:'patients/' + this.$store.getters.user.user_id,
           body:{
@@ -125,10 +139,11 @@
             housenumber: this.housenumber,
             zipcode: this.zipcode,
             city: this.city,
-            gender: this.geslacht
+            gender: this.geslacht,
           }
         }).then(() => {
           this.changeComponent('viewPatients');
+          this.isBusy = false;
         });
       },
       changeComponent (component) {
