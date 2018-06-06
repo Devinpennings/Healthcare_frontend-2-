@@ -6,7 +6,7 @@
         <div v-else id="offline"> </div>
       </div>
       <div class="name">
-        {{ chat.doctor.firstname }} {{ chat.doctor.lastname }} 
+        {{ chat.doctor.firstname }} {{ chat.doctor.lastname }}
       </div>
       <br>
     </div>
@@ -14,11 +14,11 @@
     <div class="messagesWrapper">
       <div class="messages" ref="mess">
         <div v-for="message in chat.messages">
-            <div class="bubbleme" v-if="message.sender.user_id==user.user_id"> 
+            <div class="bubbleme" v-if="message.sender.user_id==user.user_id">
               <img v-if="message.type==='image'" height="150" v-bind:src="message.message">
               <div v-else>{{ message.message }} </div>
             </div>
-            <div class="bubbleyou" v-else> 
+            <div class="bubbleyou" v-else>
               <img v-if="message.type==='image'" height="150" v-bind:src="message.message">
               <div v-else>{{ message.message }} </div>
             </div>
@@ -67,23 +67,23 @@ export default {
       if(event.keyCode == 13 && (!this.message.length === 0 || this.message.trim())){
         this.messageGo();
       }
-    }, 
+    },
     processFile(event) {
 
-      var fr = new FileReader();
-      var self = this;
+      let fr = new FileReader();
+      let self = this;
 
       fr.addEventListener("load", function(e) {
         self.image = e.target.result;
         self.messageGo();
-      }); 
+      });
 
       fr.readAsDataURL( event.target.files[0] );
 
     },
     messageGo() {
-      var message = this.message;
-      var type = 'message';
+      let message = this.message;
+      let type = 'message';
 
       if(this.image != null){
         message = this.image;
@@ -97,13 +97,13 @@ export default {
           chatId: this.chatId,
           message: message,
           type: type,
-      })
+      }),
       this.message = '';
       this.image = null;
-      setTimeout(() => { 
-        var elem = this.$refs.mess;
-        elem.scrollTop = elem.scrollHeight; 
-      }, 200);
+      // setTimeout(() => {
+      //   let elem = this.$refs.mess;
+      //   elem.scrollTop = elem.scrollHeight;
+      // }, 200);
     }
   },
 
@@ -113,13 +113,13 @@ export default {
       this.$store.dispatch('setupSockets', this.user)
     }
 
-    var intervalID = window.setInterval(() => {
-      var elem = this.$refs.mess;
-      if(elem.scrollTop + 330 > elem.scrollHeight || this.pChatId != this.prevChatId){
-        this.prevChatId = this.pChatId;
-        elem.scrollTop = elem.scrollHeight; 
-      }
-    }, 200);
+    // let intervalID = window.setInterval(() => {
+    //   let elem = this.$refs.mess;
+    //   if(elem.scrollTop + 330 > elem.scrollHeight || this.pChatId != this.prevChatId){
+    //     this.prevChatId = this.pChatId;
+    //     elem.scrollTop = elem.scrollHeight;
+    //   }
+    // }, 200);
 
     // if(this.chat != undefined && this.chat.messages.length != 0){
     //   this.chat.messages.foreach(message => {

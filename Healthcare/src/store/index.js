@@ -261,7 +261,7 @@ const Store = new Vuex.Store({
         chats: [],
       }
 
-      let socket = io('http://localhost:3000')
+      let socket = io('37.97.247.182:3000')
       chatSession.socket = socket;
 
       socket.on('connect', function() {
