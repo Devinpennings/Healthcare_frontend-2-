@@ -76,6 +76,8 @@
 
     import Datepicker from "../Datepicker"
 
+    let request = require("request");
+
     export default {
       name: "createm",
 
@@ -138,16 +140,14 @@
         changeComponent (component) {
           this.$parent.changeComponent(component)
         },
-        checkForm:function(e) {
+        checkForm () {
           this.errors = [];
-          console.log(this.firstname);
           if(!this.email || !this.name || !this.lname ||  !this.beroep || !this.password) {
             this.errors.push("Alle velden moeten ingevoerd worden");
           } else if(!this.validEmail(this.email)) {
             this.errors.push("Voer een geldig E-mail adres in");
           }
           if(!this.errors.length) return true;
-          e.preventDefault();
 
         },
         validEmail:function(email) {
