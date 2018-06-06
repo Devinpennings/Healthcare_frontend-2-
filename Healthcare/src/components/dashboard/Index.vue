@@ -3,8 +3,8 @@
     <patientchat v-if="getActiveUser.type === 'patient'"/>
     <patientchatwindow v-if="openChat && getActiveUser.type === 'patient'" class="chatFloat"/>
     <router-view/>
-    <navbar>NOTHING</navbar>
-    <sidebar>NOTHING</sidebar>
+    <navbar/>
+    <sidebar/>
     <div class="dashboardContent">
       <dossier :patientid="getUser" v-if="openComponent === 'personalDossier'"/>
       <calendar :patientid="getUser" v-if="openComponent === 'calendar'"/>
@@ -30,6 +30,7 @@
       </planner>
       <checker v-if="openComponent === 'checker'"/>
       <storage v-if="openComponent === 'storage'"/>
+      <viewapp v-if="openComponent === 'viewapp'"/>
     </div>
   </div>
 </template>
@@ -54,6 +55,7 @@ import DoctorChat from '../chat/DoctorChat.vue';
 import PatientChat from '../chat/PatientChat.vue';
 import PatientChatWindow from '../chat/PatientChatWindow.vue';
 import Storage from './MedicineStorage.vue'
+import ViewApp from './ViewApp.vue';
 
 
 export default {
@@ -90,6 +92,7 @@ export default {
     'patientchat' : PatientChat,
     'patientchatwindow' : PatientChatWindow,
     'storage' : Storage,
+    'viewapp' : ViewApp,
 
 
   },
