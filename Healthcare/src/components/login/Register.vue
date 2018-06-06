@@ -128,9 +128,18 @@
         const file = event.target.files[0]
       },
       onUpload() {
-        // upload file
+        const formData = new FormData();
+        formData.append('myFile', this.selectedFile, this.selectedFile.name);
+        this.$store.dispatch('putRequest', {
+          url: 'patients/activate/' + this.$route.query.token,
+          body: {
+            password: this.wachtwoord
+          }
+        }).then(() => {
+          this.changeComponent('viewPatients');
+        });
       }
-    },
+      },
     components: {
       'loader': Loader
     }
