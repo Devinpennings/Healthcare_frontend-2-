@@ -70,7 +70,7 @@
           approve(appointment){
               this.isBusy = true;
               this.$store.dispatch('postRequest' ,{
-                url: 'timeslots/approve/' + appointment.id + '?approval=true',
+                url: 'timeslots/approve/' + appointment.id + '?approval=true& reden=""',
               }).then(response => {
                 this.loadAppointments();
               })
