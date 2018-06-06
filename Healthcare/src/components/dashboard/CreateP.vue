@@ -29,10 +29,13 @@
           </div>
           <div class="form-group row">
             <label class="col-sm-2 form-control-label">Geboortedatum</label>
+            <div class="col-sm-10">
             <datepicker placeholder="Selecteer een Datum"  v-model="birthdate" v-on:click.capture="checkForm">NOTHING</datepicker>
+            </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-2 form-control-label">Geslacht</label>
+            <div class="col-sm-10">
             <label>
               <select v-model="geslacht">
                 <option v-for="option in options" v-bind:value="option.value">
@@ -40,6 +43,7 @@
                 </option>
               </select>
             </label>
+            </div>
           </div>
           <div class="line"></div>
           <div class="line"></div>
@@ -48,16 +52,16 @@
             <div class="col-sm-10">
               <div class="row">
                 <div class="col-md-4">
-                  <input type="text" placeholder="Plaats" v-model="city" v-on:keyup="checkForm" class="form-control">
-                </div>
-                <div class="col-md-4">
-                  <input type="text" placeholder="Straat" v-model="street" v-on:keyup="checkForm" class="form-control">
+                  <input type="text" placeholder="Postcode" v-model="zipcode" v-on:keyup="checkForm" @keydown.tab="getAddress" class="form-control">
                 </div>
                 <div class="col-md-3">
-                  <input type="number" placeholder="Huisnummer" v-model="housenumber" v-on:keyup="checkForm" class="form-control">
+                  <input type="number" placeholder="Huisnummer" v-model="housenumber" v-on:keyup="checkForm" @keydown.tab="getAddress" class="form-control">
                 </div>
                 <div class="col-md-4">
-                  <input type="text" placeholder="Postcode" v-model="zipcode" v-on:keyup="checkForm" class="form-control">
+                  <input type="text" placeholder="Straat" v-model="street" v-on:keyup="checkForm" class="form-control" disabled>
+                </div>
+                <div class="col-md-4">
+                  <input type="text" placeholder="Plaats" v-model="city" v-on:keyup="checkForm" class="form-control" disabled>
                 </div>
               </div>
             </div>
@@ -109,9 +113,13 @@
         ]
       }
     },
+
     components:{
       'datepicker' : Datepicker
     },
+    created () {
+     this.checkForm()
+      },
     methods: {
       create() {
         this.$store.dispatch('postRequest', {
@@ -134,20 +142,33 @@
       changeComponent (component) {
         this.$parent.changeComponent(component)
       },
-      checkForm:function(e) {
+      checkForm() {
         this.errors = [];
-        if(!this.email || !this.name || !this.lname || !this.birthdate || !this.street || !this.housenumber || !this.city || !this.zipcode || !this.geslacht) {
+        if(!this.email || !this.name || !this.lname || !this.birthdate || !this.housenumber ||  !this.zipcode || !this.geslacht || !this.street || !this.city) {
           this.errors.push("Alle velden moeten ingevoerd worden");
         } else if(!this.validEmail(this.email)) {
           this.errors.push("Voer een geldig E-mail adres in");
         }
         if(!this.errors.length) return true;
-        e.preventDefault();
 
       },
       validEmail:function(email) {
         let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
+      },
+      getAddress(event) {
+        if (event.key === 'Tab') {
+            if (this.zipcode === '' || this.housenumber === '') {
+              return null
+            } else {
+              this.$store.dispatch("addressAPI", 'addresses/?postcode=' + this.zipcode + '&number=' + this.housenumber).then(body => {
+                this.city = body._embedded.addresses[0].city.label;
+                this.street = body._embedded.addresses[0].street;
+                this.checkForm()
+              });
+            }
+
+        }
       }
     },
   }
