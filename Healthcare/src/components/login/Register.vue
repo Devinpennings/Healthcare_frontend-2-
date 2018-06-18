@@ -47,8 +47,7 @@
                   type="file"
                   v-on:change="onFileChanged"
                   ref="fileInput">
-                <button v-on:click="$refs.fileInput.click()">Kies een foto</button>
-                <button v-on:click="onUpload">Upload</button>
+                <button v-on:click="$refs.fileInput.click()" accept="image/*">Kies een foto</button>
               </div>
             <p v-if="errors.length">
               <b>De volgende fouten traden op:</b>
@@ -86,7 +85,8 @@
         wachtwoord: null,
         wachtwoordCheck: null,
         token: this.$route.query,
-        selectedFile: null
+        selectedFile: null,
+        file: null
       }
     },
     created (){
@@ -118,26 +118,26 @@
         this.$store.dispatch("putRequest", {
           url: link,
           body: {
-            password: this.wachtwoord
+            password: this.wachtwoord,
+            photo: this.file
           }
         }).then(response => {
           this.$router.push('login');
         });
       },
       onFileChanged (event) {
-        const file = event.target.files[0]
+        var fr = new FileReader();
+
+        fr.addEventListener("load", function(e) {
+          this.file = e.target.result;
+          console.log("Eventlistener" + this.file);
+        });
+
+        fr.readAsDataURL( event.target.files[0] );
       },
       onUpload() {
         const formData = new FormData();
-        formData.append('myFile', this.selectedFile, this.selectedFile.name);
-        this.$store.dispatch('putRequest', {
-          url: 'patients/activate/' + this.$route.query.token,
-          body: {
-            password: this.wachtwoord
-          }
-        }).then(() => {
-          this.changeComponent('viewPatients');
-        });
+        console.log("upload" + this.file);
       }
       },
     components: {
