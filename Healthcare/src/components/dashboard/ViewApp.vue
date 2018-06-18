@@ -53,42 +53,12 @@
     },
     created (){
       this.isBusy = true;
-      if(this.$store.getters.user.type === 'doctor') {
-        this.$store.dispatch("getRequest", 'timeslots/approved?approval=1&doctor_id=' + this.user_id).then((response) => {
-          this.isBusy = false;
-          this.appointments = response;
-          let result = [];
-          this.appointments.forEach((x) => {
-            let appointmentDate = new Date(x.startTime);
-            if (this.day.toDateString() === appointmentDate.toDateString()) {
-              result.push(x);
-            }
-          });
-          this.items = this.ConvertToDatetime(result)
-        });
-      }else if(this.$store.getters.user.type === 'doctorEmployee'){
-        this.$store.dispatch("getRequest", 'timeslots/approved?approval=2&doctor_id0').then((response) => {
-          this.isBusy = false;
-          this.appointments = response;
-          let result = [];
-          this.appointments.forEach((x) => {
-            let appointmentDate = new Date(x.startTime);
-            if (this.day.toDateString() === appointmentDate.toDateString()) {
-              result.push(x);
-            }
-          });
-          this.items = this.ConvertToDatetime(result)
-        });
-      }
+      this.$store.dispatch("getRequest", '/timeslots/approvedPatient?approval=1&patient_id=' + this.user_id).then((response) => {
+        this.isBusy = false;
+        this.appointments = this.ConvertToDatetime(response);
+      });
     },
     methods: {
-      loadAppointments() {
-        this.isBusy = true;
-        this.$store.dispatch("getRequest", 'timeslots/approved?approval=1&doctor_id=' + this.user_id).then((response) => {
-          this.isBusy = false;
-          this.appointments = this.ConvertToDatetime(response);
-        });
-      },
       changeComponent (component) {
         this.$parent.changeComponent(component);
       },
