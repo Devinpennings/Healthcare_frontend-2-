@@ -121,7 +121,6 @@
       }
     },
     created () {
-      this.isBusy = true;
       this.$store.dispatch("getRequest", "patients/" + this.patient.user_id).then(response => {
         this.patient = response;
         this.name = this.patient.firstname;
@@ -133,7 +132,6 @@
         this.geslacht = this.patient.gender;
         this.city = this.patient.city;
         this.zipcode = this.patient.zipcode;
-        this.isBusy = false;
       });
     },
     methods: {

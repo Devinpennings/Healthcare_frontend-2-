@@ -75,10 +75,6 @@
         <b-button @click="downloadDiagnosis">
           <i class="ion-ios-cloud-download"></i> Download dossier
         </b-button>
-        <b-button @click="showTestModal">
-          <i class="ion-ios-cloud-download"></i> Download dossier
-        </b-button>
-
       </div>
     </div>
   </div>

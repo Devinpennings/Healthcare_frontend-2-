@@ -1,6 +1,8 @@
 <!--suppress ALL -->
 <template>
   <div class="dashboardContentForms">
+    <div class="loader" v-if="isBusy" ><loader></loader></div>
+    <div v-if="!isBusy">
     <b-button size="sm" v-on:click="changeComponent('planner')" variant="primary">
       <i class="ion-ios-arrow-back"></i> Terug
     </b-button>
@@ -49,6 +51,7 @@
         </template>
       </b-table>
   </div>
+    </div>
   </div>
 </template>
 
