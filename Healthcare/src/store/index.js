@@ -187,6 +187,28 @@ const Store = new Vuex.Store({
         }, 1000);
       });
     },
+    putRequestPhoto({ commit }, info) {
+      commit(PENDING);
+      return new Promise(resolve => {
+        setTimeout(() => {
+          console.log(info.url)
+          console.log(info.body)
+          axios({
+            method: 'put',
+            url: API_URL + info.url,
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            params: info.body,
+            formData: info.content,
+          }).then(function (response) {
+            resolve(response.data);
+          }).catch(function (error){
+            resolve(error);
+          });
+        }, 1000);
+      });
+    },
     postRequest({commit}, info) {
       commit(PENDING);
       return new Promise(resolve => {
