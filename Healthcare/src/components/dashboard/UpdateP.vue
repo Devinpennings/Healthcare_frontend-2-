@@ -1,86 +1,87 @@
 <template>
   <section class="forms">
-    <div class="loader" v-if="isBusy" ></div>
+    <div class="loader" v-if="isBusy" ><loader></loader></div>
     <div v-if="!isBusy">
-    <div class="dashboardContentForms">
-      <div class="container">
-        <!-- Page Header-->
-        <header>
-          <h1 class="h3 display">Wijzigen</h1>
-        </header>
-      </div>
-      <div class="card-body">
-        <div class="line"></div>
-        <form class="form-horizontal">
-          <div class="form-group row">
-            <label class="col-sm-2 form-control-label">Naam</label>
-            <div class="col-sm-10">
-              <input type="text" placeholder="Naam" v-model="name" v-on:keyup="checkForm" class="form-control">
+      <div class="dashboardContentForms">
+        <div class="container">
+          <!-- Page Header-->
+          <header>
+            <h1 class="h3 display">Creëren</h1>
+          </header>
+        </div>
+        <div class="card-body">
+          <form class="form-horizontal">
+            <div class="form-group row">
+              <label class="col-sm-2 form-control-label">Email</label>
+              <div class="col-sm-10">
+                <input type="text" placeholder="Email" v-model="email" v-on:keyup="checkForm" class="form-control">
+              </div>
             </div>
-          </div>
-          <div class="line"></div>
-          <div class="form-group row">
-            <label class="col-sm-2 form-control-label">Achternaam</label>
-            <div class="col-sm-10">
-              <input type="text" placeholder="Achternaam" v-model="lname" v-on:keyup="checkForm" class="form-control">
+            <div class="form-group row">
+              <label class="col-sm-2 form-control-label">Naam</label>
+              <div class="col-sm-10">
+                <input type="text" placeholder="Naam" v-model="name" v-on:keyup="checkForm" class="form-control">
+              </div>
             </div>
-          </div>
-          <div class="line"></div>
-          <div class="form-group row">
-            <label class="col-sm-2 form-control-label">Geboortedatum</label>
-            <datepicker placeholder="Selecteer een Datum"  v-model="birthdate" v-on:change="checkForm">NOTHING</datepicker>
-          </div>
-          <div class="line"></div>
-          <div class="form-group row">
-            <label class="col-sm-2 form-control-label">Geslacht</label>
-            <label>
-              <select v-model="geslacht">
-                <option v-for="option in options" v-bind:value="option.value">
-                  {{ option.text }}
-                </option>
-              </select>
-            </label>
-          </div>
-          <div class="line"></div>
-          <div class="form-group row">
-            <label class="col-sm-2 form-control-label">Adres</label>
-            <div class="col-sm-10">
-              <div class="row">
-                <div class="col-md-4">
-                  <input type="text" placeholder="Plaats" v-model="city" v-on:keyup="checkForm" class="form-control">
-                </div>
-                <div class="col-md-4">
-                  <input type="text" placeholder="Straat" v-model="street" v-on:keyup="checkForm" class="form-control">
-                </div>
-                <div class="col-md-3">
-                  <input type="number" placeholder="Huisnummer" v-model="housenumber" v-on:change="checkForm" class="form-control">
-                </div>
-                <div class="col-md-4">
-                  <input type="text" placeholder="Postcode" v-model="zipcode" v-on:keyup="checkForm" class="form-control">
+            <div class="form-group row">
+              <label class="col-sm-2 form-control-label">Achternaam</label>
+              <div class="col-sm-10">
+                <input type="text" placeholder="Achternaam" v-model="lname" v-on:keyup="checkForm" class="form-control">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-2 form-control-label">Geslacht</label>
+              <div class="col-sm-10">
+                <label>
+                  <select v-model="geslacht">
+                    <option v-for="option in options" v-bind:value="option.value">
+                      {{ option.text }}
+                    </option>
+                  </select>
+                </label>
+              </div>
+            </div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="form-group row">
+              <label class="col-sm-2 form-control-label">Adres</label>
+              <div class="col-sm-10">
+                <div class="row">
+                  <div class="col-md-4">
+                    <input type="text" placeholder="Postcode" v-model="zipcode" v-on:keyup="checkForm" @keydown.tab="getAddress" class="form-control">
+                  </div>
+                  <div class="col-md-3">
+                    <input type="number" placeholder="Huisnummer" v-model="housenumber" v-on:keyup="checkForm" @keydown.tab="getAddress" class="form-control">
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" placeholder="Straat" v-model="street" v-on:keyup="checkForm" class="form-control" disabled>
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" placeholder="Plaats" v-model="city" v-on:keyup="checkForm" class="form-control" disabled>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="line"></div>
-          <div class="form-group row">
-            <div class="col-sm-4 offset-sm-2">
+            <div class="line"></div>
+            <div class="form-group row">
+              <div class="col-sm-4 offset-sm-2">
 
+              </div>
+            </div>
+          </form>
+          <p v-if="errors.length">
+            <b>De volgende fouten traden op:</b>
+          <ul>
+            <li v-for="error in errors">{{ error }}</li>
+          </ul>
+          <div class="form-group row">
+            <button class="btn btn-secondary" v-on:click="changeComponent('viewPatients')" style="cursor:pointer"><span>Cancel</span></button>
+            <div v-if="!errors.length">
+              <button class="btn btn-primary" style="vertical-align:middle" v-on:click="update()" ><span>Edit</span></button>
             </div>
           </div>
-        </form>
+        </div>
       </div>
-    </div>
-    <p v-if="errors.length">
-      <b>De volgende fouten traden op:</b>
-    <ul>
-      <li v-for="error in errors">{{ error }}</li>
-    </ul>
-    <div class="form-group row">
-      <button class="btn btn-secondary" v-on:click="changeComponent('viewPatients')" style="cursor:pointer"><span>Cancel</span></button>
-      <div v-if="!errors.length">
-        <button class="btn btn-primary" style="vertical-align:middle" v-on:click="update()"><span>Edit</span></button>
-      </div>
-    </div>
     </div>
   </section>
 </template>

@@ -183,8 +183,6 @@
     },
     methods: {
       selectMedicine(object) {
-        console.log("hoi");
-        console.log(object);
         this.testnaam = object.name;
       },
       deletePatient(patient) {
@@ -192,27 +190,25 @@
         console.log(patient);
         this.$store.dispatch('deleteRequest', {
           url: 'patients/' + patient,
-        })
+        }).then(response  => {
+          this.reloadPatients();
+        });
       },
       createPrescription() {
-        console.log(this.testSelected);
-        console.log(this.testpatient);
-        console.log(this.testhoeveelheid);
         this.$store.dispatch('postRequest', {
           url: 'medicines/order/' + this.testSelected.id + '?quantity=' + this.testhoeveelheid + '&patient_id=' + this.testpatient + '&instructions=' + this.testNote,
         })
       },
       getAge(age) {
-        var d = new Date(age); // The 0 there is the key, which sets the date to the epoch
-        console.log(d)
+        let d = new Date(age); // The 0 there is the key, which sets the date to the epoch
         return d.toLocaleDateString()
       },
       getItems() {
         return this.items;
       },
       newDiagnose() {
-        this.isBusy = true
-        console.log(this.patient.user_id)
+        this.isBusy = true;
+        console.log(this.patient.user_id);
         this.$store.dispatch('postRequest', {
           url: 'patients/dossier/' + this.patient.user_id,
           body: {
@@ -263,6 +259,15 @@
           entries[index].age = new Date( parseFloat( entries[index].age)).toLocaleDateString();
         }
         return entries;
+      },
+      reloadPatients(){
+        this.isBusy = true;
+        this.$store.dispatch("getRequest", 'patients').then((response) => {
+          this.isBusy = false;
+          this.patients = this.dateConverter(response);
+          this.totalRows = this.patients.length;
+          this.patients = response
+        });
       }
     },
   }
