@@ -1,5 +1,7 @@
 <template>
   <div class="dashboardContentForms">
+    <div class="loader" v-if="isBusy" ><loader></loader></div>
+    <div v-if="!isBusy">
     <b-modal id="medicijnVoorschrijven"
              size="lg"
              title="Schrijf hier medicijnen voor"
@@ -41,7 +43,7 @@
             </b-card>
           </template>
           <template slot="actions" slot-scope="row">
-            <b-form-checkbox :value="row.item" :id="row.item.id" v-model="testSelected" v-on:change="selectMedicine(row.item.id)"></b-form-checkbox>
+            <b-form-checkbox :value="row.item"  v-model="testSelected" v-on:change="selectMedicine(row.item.id)"></b-form-checkbox>
           </template>
         </b-table>
       </form>
@@ -55,7 +57,7 @@
                   <label>{{testSelected.name}}</label>
                 </div>
                 <div class="col-md-3">
-                  <input type="number" placeholder="Hoeveelheid" v-model="testhoeveelheid" class="form-control" @click.prevent="checkMedicineAmount">
+                  <input type="number" placeholder="Hoeveelheid" v-model="testhoeveelheid" class="form-control" @change="checkMedicineAmount">
                 </div>
               </div>
               <div class="row" style="margin-left: auto; margin-top: 10px;">
@@ -101,21 +103,22 @@
       >
         <template slot="actions" slot-scope="row">
           <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->
-          <b-button size="sm" v-if="user.type === 'doctor'" v-on:click="changeComponentUpdate('personalDossier', row.item.user_id)" variant="primary">
+          <b-button  v-b-tooltip.hover title="Dossier Inzien" size="sm" v-if="user.type === 'doctor'" v-on:click="changeComponentUpdate('personalDossier', row.item.user_id)" variant="primary">
             <i style="font-size:24px" class="fa">&#xf06e;</i>
           </b-button>
-          <b-button size="sm" v-if="user.type === 'doctor'" v-on:click="showTestModal(row.item.user_id)" variant="primary">
-            <i style="font-size:24px" class="fa">&#xf0f9;</i>
+          <b-button v-b-tooltip.hover title="Medicijnen voorschrijven"  size="sm" v-if="user.type === 'doctor'" v-on:click="showTestModal(row.item.user_id)" variant="primary">
+            <i style="font-size:24px" class="fa">&#xf0fe;</i>
           </b-button>
-          <b-button size="sm" v-on:click="changeComponent('updatePatient', row.item)" variant="primary">
+          <b-button v-b-tooltip.hover title="Bewerk Patient" size="sm" v-on:click="changeComponentUpdate('updatePatient', row.item)" variant="primary">
             <i style="font-size:24px" class="fa">&#xf044;</i>
           </b-button>
-          <b-button size="sm" v-on:click="deletePatient(row.item.user_id)" variant="primary">
+          <b-button v-b-tooltip.hover title="Verwijder Patient"  size="sm" v-on:click="deletePatient(row.item.user_id)" variant="primary">
             <i style="font-size:24px" class="fa">&#xf014;</i>
           </b-button>
         </template>
       </b-table>
     </form>
+  </div>
   </div>
 </template>
 
@@ -143,7 +146,6 @@
           actions: {label: 'Acties'}
         },
         testFields: {
-          id: {label: 'ID', sortable: true},
           name: {label: 'Naam', sortable: true},
           stock: {label: "Op voorraad", sortable: true},
           actions: {label: ''},
@@ -226,15 +228,17 @@
       },
       showTestModal(patient) {
         this.testpatient = patient;
-        this.isBusy = true;
+        //this.isBusy = true;
+        //var self = this;
         this.$store.dispatch("getRequest", "medicines").then(response => {
           this.isBusy = false;
           console.log(response);
           // this.user = response;
           this.testMedicijnen = response;
           this.isLoading = false;
-          this.$root.$emit('bv::show::modal', 'medicijnVoorschrijven')
         });
+          this.$root.$emit('bv::show::modal', 'medicijnVoorschrijven')
+
       },
       changeComponent(component) {
         this.$parent.changeComponent(component);

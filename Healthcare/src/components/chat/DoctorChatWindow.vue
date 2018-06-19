@@ -6,7 +6,7 @@
         <div v-else id="offline"> </div>
       </div>
       <div class="name">
-        {{ chat.patient.firstname }} {{ chat.patient.lastname }} 
+        {{ chat.patient.firstname }} {{ chat.patient.lastname }}
       </div>
       <br>
 <!--       <div id="fileButton">
@@ -18,11 +18,11 @@
     <div class="messagesWrapper">
       <div class="messages" ref="mess">
         <div v-for="message in chat.messages">
-          <div class="bubbleme" v-if="message.sender.user_id==user.user_id"> 
+          <div class="bubbleme" v-if="message.sender.user_id==user.user_id">
             <img v-if="message.type==='image'" height="150" v-bind:src="message.message">
             <div v-else>{{ message.message }} </div>
             <div class="timeStamp">{{ message.date.toTimeString().split(':')[0]}}:{{message.date.toTimeString().split(':')[1] }}</div></div>
-          <div class="bubbleyou" v-else> 
+          <div class="bubbleyou" v-else>
             <img v-if="message.type==='image'" height="150" v-bind:src="message.message">
             <div v-else>{{ message.message }} </div>
             <div class="timeStamp">{{ message.date.toTimeString().split(':')[0]}}:{{message.date.toTimeString().split(':')[1] }}</div></div>
@@ -70,28 +70,28 @@ export default {
           message: this.message
         })
         this.message = ''
-        setTimeout(() => { 
-          var elem = this.$refs.mess;
-          elem.scrollTop = elem.scrollHeight; 
-        }, 200);
+        // setTimeout(() => {
+        //   var elem = this.$refs.mess;
+        //   elem.scrollTop = elem.scrollHeight;
+        // }, 200);
       }
     },
   },
 
   created(){
     this.prevChatId = this.pChatId;
-    setTimeout(() => { 
-      var elem = this.$refs.mess;
-      elem.scrollTop = elem.scrollHeight; 
-    }, 0);    
-
-    var intervalID = window.setInterval(() => {
-      var elem = this.$refs.mess;
-      if(elem.scrollTop + 330 > elem.scrollHeight || this.pChatId != this.prevChatId){
-        this.prevChatId = this.pChatId;
-        elem.scrollTop = elem.scrollHeight; 
-      }
-    }, 200);
+    // setTimeout(() => {
+    //   var elem = this.$refs.mess;
+    //   elem.scrollTop = elem.scrollHeight;
+    // }, 0);
+    //
+    // var intervalID = window.setInterval(() => {
+    //   var elem = this.$refs.mess;
+    //   if(elem.scrollTop + 330 > elem.scrollHeight || this.pChatId != this.prevChatId){
+    //     this.prevChatId = this.pChatId;
+    //     elem.scrollTop = elem.scrollHeight;
+    //   }
+    // }, 200);
   },
 
   beforeCreate(){

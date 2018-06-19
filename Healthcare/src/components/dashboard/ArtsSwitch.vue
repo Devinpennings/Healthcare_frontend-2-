@@ -1,5 +1,12 @@
 <template>
   <div class="dashboardContentForms">
+    <b-modal id="thankyou"
+             title="Dankjewel voor het melden"
+             @ok="changeComponent('planner')"
+             ok-only
+             ok-title="OK">
+      <p>U wordt automatisch doorgestuurd</p>
+    </b-modal>
     <div class="container">
       <!-- Page Header-->
       <header>
@@ -14,7 +21,7 @@
             <label>
               <select v-model="selected">
                 <option disabled value="">Selecteer vervangend dokter</option>
-                <option v-for="doctors in employees" v-bind:value="doctors.user_id">{{doctors.firstname + " " + doctors.lastname }}
+                <option  v-for="doctors in employees" v-if="doctors.user_id !== user_id && doctors.type !== 'doctorEmployee'" v-bind:value="doctors.user_id">{{doctors.firstname + " " + doctors.lastname }}
                 </option>
               </select>
             </label>
@@ -45,6 +52,7 @@
 </template>
 
 <script>
+import Loader from "../loader.vue"
 
   export default{
     name: 'artswitch',
@@ -70,8 +78,10 @@
         types: [
           'date',
         ],
-
       }
+    },
+    components:{
+      'loader' : Loader,
     },
     created () {
       this.isBusy = true;
@@ -83,12 +93,16 @@
 
     methods: {
       create() {
+        this.$root.$emit('bv::show::modal', 'thankyou')
+        this.isBusy = true;
         let date = new Date(this.start);
         let date2 = new Date(this.end);
         this.$store.dispatch('postRequest',
           {
             url:'doctors/requestSubtitude/'+ this.user_id + '?subtitudeId=' + this.selected + '&startTime='+ date.valueOf().toString() +'&endTime=' + date2.valueOf().toString(),
           }).then(() => {
+          this.isBusy = false;
+
           this.changeComponent('planner');
 
         });

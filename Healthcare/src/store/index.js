@@ -81,6 +81,25 @@ const Store = new Vuex.Store({
     }
   },
   actions: {
+    addressAPI({ commit }, url) {
+      commit(PENDING);
+      return new Promise(resolve => {
+        setTimeout(() => {
+          axios({
+            method: 'get',
+            url: 'https://api.postcodeapi.nu/v2/' + url,
+            headers: {
+              accept: 'application/hal+json',
+              'x-api-key': '4sTCDMOqb8ayY3EAScQWO7F1ZmKjQNIhYXP6RlMg'
+            }
+          }).then(function (response) {
+            resolve(response.data);
+          }).catch(function (error){
+            resolve(error);
+          });
+        });
+      }, 1000);
+    },
     login({ commit }, creds) {
       commit(PENDING);
       console.log("logging in...");
@@ -242,7 +261,7 @@ const Store = new Vuex.Store({
         chats: [],
       }
 
-      let socket = io('http://localhost:3000')
+      let socket = io('37.97.247.182:3000')
       chatSession.socket = socket;
 
       socket.on('connect', function() {

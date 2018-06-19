@@ -1,6 +1,13 @@
 <!--suppress ALL -->
 <template>
 <div class="dashboardContentForms">
+  <b-modal id="dissapproveModal"
+           title="Reden van afkeuring"
+           @ok="disapprove(chosenAppointment,reason)"
+           ok-title="Afkeuren">
+  <p>Vul hieronder de reden van afkeuring in.</p>
+    <textarea class="textarea" v-model="reason" style="width: 100%;height: 200px;"></textarea>
+  </b-modal>
   <div class="row">
     <b-table
       show-empty
@@ -25,7 +32,7 @@
       <b-button variant="primary" size="sm" v-on:click="approve(row.item)">
         Goedkeuren
       </b-button>
-      <b-button variant="secondary" size="sm" v-on:click="disapprove(row.item)">
+      <b-button variant="secondary" size="sm" @click="showModal(row.item)">
         Afkeuren
       </b-button>
     </template>
@@ -57,6 +64,8 @@
           appointments: [],
           selected: null,
           options: [],
+          chosenAppointment: null,
+          reason: ''
         }
       },
       created (){
@@ -70,15 +79,15 @@
           approve(appointment){
               this.isBusy = true;
               this.$store.dispatch('postRequest' ,{
-                url: 'timeslots/approve/' + appointment.id + '?approval=true',
+                url: 'timeslots/approve/' + appointment.id + '?approval=true& reden=""',
               }).then(response => {
                 this.loadAppointments();
               })
             },
-        disapprove(appointment){
+        disapprove(appointment, reason){
             this.isBusy = true;
             this.$store.dispatch('postRequest' , {
-              url: 'timeslots/reset/' + appointment.id,
+              url: 'timeslots/approve/' + appointment.id + '?approval=false&reden=' + reason,
             }).then(response => {
               this.loadAppointments();
             })
@@ -112,6 +121,10 @@
           }
           return entryAppointments;
         },
+        showModal(item){
+          this.chosenAppointment = item
+          this.$root.$emit('bv::show::modal','dissapproveModal')
+        }
       }
     }
 </script>

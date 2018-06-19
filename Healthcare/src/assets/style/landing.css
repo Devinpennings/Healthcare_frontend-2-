@@ -158,6 +158,22 @@ object{
     margin: 10px;
 }
 
+.buttonaddPhoto {
+  display: inline-block;
+  border-radius: 2px;
+  background-color: #34B3C1;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 10px;
+  padding: 5px;
+  width: 60px;
+  height: 30px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
 .button {
     display: inline-block;
     border-radius: 4px;
@@ -614,4 +630,12 @@ textarea {
   overflow: auto;
   border-radius: 10px;
   outline: none;
+}
+
+.imageRegister {
+  width: 120px;
+  height: 120px;
+  background-color: white;
+  border: 1px solid #DDD;
+  padding: 5px;
 }
