@@ -43,7 +43,7 @@
             </b-card>
           </template>
           <template slot="actions" slot-scope="row">
-            <b-form-checkbox :value="row.item" :id="row.item.id" v-model="testSelected" v-on:change="selectMedicine(row.item.id)"></b-form-checkbox>
+            <b-form-checkbox :value="row.item"  v-model="testSelected" v-on:change="selectMedicine(row.item.id)"></b-form-checkbox>
           </template>
         </b-table>
       </form>
@@ -146,7 +146,6 @@
           actions: {label: 'Acties'}
         },
         testFields: {
-          id: {label: 'ID', sortable: true},
           name: {label: 'Naam', sortable: true},
           stock: {label: "Op voorraad", sortable: true},
           actions: {label: ''},
@@ -229,15 +228,17 @@
       },
       showTestModal(patient) {
         this.testpatient = patient;
-        this.isBusy = true;
+        //this.isBusy = true;
+        //var self = this;
         this.$store.dispatch("getRequest", "medicines").then(response => {
           this.isBusy = false;
           console.log(response);
           // this.user = response;
           this.testMedicijnen = response;
           this.isLoading = false;
-          this.$root.$emit('bv::show::modal', 'medicijnVoorschrijven')
         });
+          this.$root.$emit('bv::show::modal', 'medicijnVoorschrijven')
+
       },
       changeComponent(component) {
         this.$parent.changeComponent(component);

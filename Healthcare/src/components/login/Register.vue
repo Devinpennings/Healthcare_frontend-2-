@@ -88,7 +88,7 @@
         wachtwoord: null,
         wachtwoordCheck: null,
         token: this.$route.query,
-        file: ""
+        file: "test"
       }
     },
     created (){
@@ -115,13 +115,9 @@
       e.preventDefault();
       },
       register: function() {
-        let link = "patients/activate/" + this.$route.query.token;
+        let link = "patients/activate/" + this.$route.query.token + "?password=" + this.wachtwoord + "&photo=form" + this.file;
         this.$store.dispatch("putRequest", {
           url: link,
-          body: {
-            password: this.wachtwoord,
-            photo: this.file
-          }
         }).then(response => {
           this.$router.push('login');
         });
@@ -132,6 +128,7 @@
           var reader = new FileReader();
           reader.onload = (e) => {
             this.file = e.target.result;
+            console.log(this.file);
           };
           reader.readAsDataURL(input.files[0]);
         }
