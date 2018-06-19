@@ -4,7 +4,7 @@
     <div  class="row">
       <b-table
         show-empty
-        :items="items"
+        :items="appointments"
         :busy.sync="isBusy"
         :fields="fields"
         :empty-text="'Er zijn geen afspraken'"
@@ -14,9 +14,6 @@
           <div v-else>NOTHING</div>
         </template>
         <template slot="actions" slot-scope="row">
-          <b-button variant="secondary" size="sm" v-on:click="disapprove(row.item)">
-            Verwijderen
-          </b-button>
         </template>
       </b-table>
     </div>
@@ -34,8 +31,8 @@
         fields: {
           patient: {label: 'Patiënt', sortable: true},
           endTime: {label: 'Tijd', sortable: true},
+          startTime: {label: 'Datum', sortable: true},
           note: {label: 'Reden van bezoek'},
-          actions: {label: 'Acties'}
         },
         fieldsEmployee:{
           patient: {label: 'Patiënt', sortable: true},
@@ -53,7 +50,7 @@
     },
     created (){
       this.isBusy = true;
-      this.$store.dispatch("getRequest", '/timeslots/approvedPatient?approval=1&patient_id=' + this.user_id).then((response) => {
+      this.$store.dispatch("getRequest", 'timeslots/approvedPatient?approval=1&patient_id=' + this.user_id).then((response) => {
         this.isBusy = false;
         this.appointments = this.ConvertToDatetime(response);
       });
@@ -74,15 +71,15 @@
       },
       ConvertToDatetime(dateValues) {
         let entryAppointments = dateValues;
-        dateValues.forEach(x => {
-          let startTimeNew = new Date(x.startTime);
-          let endTimeNew = new Date(x.endTime);
+        for (let index = 0; index < entryAppointments.length; ++index) {
+          let startTimeNew = new Date( parseFloat( entryAppointments[index].startTime));
+          let endTimeNew = new Date( parseFloat( entryAppointments[index].endTime));
           let timeSlotStart = startTimeNew.getUTCHours() + ':' + startTimeNew.getUTCMinutes();
           let timeSlotEnd = endTimeNew.getUTCHours() + ':' + endTimeNew.getUTCMinutes();
-          entryAppointments.endTime = timeSlotStart + ' - ' + timeSlotEnd;
-          x.endTime = entryAppointments.endTime
-        });
-        return dateValues;
+          entryAppointments[index].startTime = new Date( parseFloat( entryAppointments[index].startTime)).toDateString();
+          entryAppointments[index].endTime = timeSlotStart + ' - ' + timeSlotEnd;
+        }
+        return entryAppointments;
       },
     },
   }
