@@ -23,7 +23,7 @@
         <div class="col-md-6">
           <div class="row">
             <div class="col text-center py-5">
-              <b-img slot="aside" blank-color="#ccc" width="200px" height="200px" alt="placeholder" class="rounded-circle" src="https://studiomango.nl/wp-content/uploads/2014/10/team-profile-picture_minko.jpg"></b-img>
+              <b-img slot="aside" blank-color="#ccc" width="200px" height="200px" alt="placeholder" class="rounded-circle" :src="'data:image/png;base64,' + patient.photo"></b-img>
             </div>
             <div class="col py-1">
               <h4>Volledige naam:</h4>
@@ -131,6 +131,9 @@
           return this.testFields
             .filter(f => f.sortable)
             .map(f => { return { text: f.label, value: f.key } })
+        },
+        myImage () {
+          return `data:image/png;base64, ${this.patients.photo}`
         }
       },
       methods: {

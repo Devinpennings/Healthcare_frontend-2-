@@ -17,6 +17,7 @@ const SOCKET_SETUP = 'SOCKET_SETUP';
 const CHATSESSION_CHANGED = 'CHATSESSION_CHANGED';
 const CHAT_UPDATE = 'CHAT_UPDATE';
 const NEW_MESSAGE = 'NEW_MESSAGE';
+const PHOTO = 'PHOTO';
 
 const API_URL = 'http://35.195.241.255:8081/api/';
 
@@ -32,6 +33,7 @@ const Store = new Vuex.Store({
     user: null,
     chatSession: null,
     chats: null,
+    photo: null,
   },
   mutations: {
     [PENDING] (state){
@@ -53,10 +55,14 @@ const Store = new Vuex.Store({
     [REQUEST_SUCCES] (state){
       state.pending = true;
     },
+    [PHOTO] (state, photo){
+      state.pending = true;
+      state.photo = photo;
+    },
     [REQUEST_FAIL] (state){
       state.pending = true;
     },
-    [USER_CHANGED] (state, user){
+    [USER_CHANGED] (state, user, photo){
       state.user = user;
       state.pending = false;
     },
@@ -133,6 +139,7 @@ const Store = new Vuex.Store({
             commit(LOGIN_SUCCES);
             response.data.user.mappedDoctor = response.data.mappedDoctor;
             commit(USER_CHANGED, response.data.user);
+            commit(PHOTO, response.data.photo);
             resolve();
           }).catch(function (error) {
             console.log(error.response);
@@ -288,17 +295,14 @@ const Store = new Vuex.Store({
 
       socket.on('connect', function() {
         socket.emit('authenticate', user);
-        console.log('user connected');
         chatSession.status = 'connected';
 
         socket.on('disconnect', function() {
-          console.log('user disconnected');
           chatSession.status = 'disconnected';
         });
 
         socket.on('user_joined', (data) => {
-          console.log(data);
-          console.log('user joined id ' + data.user.user_id + ' on room ' + data.room.id);
+
           data.room.messages.forEach((message) => {
             message.date = new Date(message.date);
           });
@@ -306,8 +310,7 @@ const Store = new Vuex.Store({
         });
 
         socket.on('user_left', (data) => {
-          console.log('user left id ' + data.user.user_id + ' from room ' + data.room.id);
-          console.log(data.room);
+
           commit(CHAT_UPDATE, data.room);
         });
 
@@ -334,6 +337,9 @@ const Store = new Vuex.Store({
     },
     user: state => {
       return state.user
+    },
+    photo: state => {
+      return state.photo
     },
     chatSession: state => {
       return state.chatSession

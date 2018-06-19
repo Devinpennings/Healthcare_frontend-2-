@@ -7,7 +7,7 @@
         <ul id="side-main-menu" class="side-menu list-unstyled">
 
         <div class="profile-userpic">
-          <img src="https://studiomango.nl/wp-content/uploads/2014/10/team-profile-picture_minko.jpg" class="img-responsive" alt="">
+          <img :src="'data:image/png;base64,' + photo" class="img-responsive" alt="">
           <h6 class="py-1" style="text-align: center;"> {{ user.firstname + ' ' + user.lastname }} </h6>
         </div>
 
@@ -57,6 +57,7 @@
         userType: this.$store.getters.user.type,
         user: this.$store.getters.user,
         cPersonalDossier: false,
+        photo: this.$store.getters.photo
       }
     },
     methods: {
@@ -64,10 +65,11 @@
         this.$parent.changeComponent(component)
       },
       logout(){
+        console.log(this.user);
         this.$store.dispatch("logout").then(() => {
           this.$router.push('/login');
         });
-      }
+      },
     }
   }
 </script>

@@ -118,8 +118,9 @@
       register: function() {
       console.log(this.file);
       console.log(this.selectedFile);
+      var self = this;
         let formData = new FormData();
-        formData.append("fileInput", this.selectedFile);
+        formData.append("file", this.selectedFile);
         console.log(this.selectedFile);
         let link = "http://35.195.241.255:8081/api/patients/activate/" + this.$route.query.token + "?password=" + this.wachtwoord;
         axios.put( link,
@@ -130,11 +131,8 @@
             }
           }
         ).then(function(){
-          this.$router.push('login');
+          self.$router.push('login');
         })
-          .catch(function(){
-            console.log('FAILURE!!');
-          });
         },
       onFileChanged (event) {
         var input = event.target;
@@ -142,6 +140,7 @@
           var reader = new FileReader();
           reader.onload = (e) => {
             this.file = e.target.result;
+            console.log(this.file);
           };
           this.selectedFile = input.files[0];
           reader.readAsDataURL(input.files[0]);
