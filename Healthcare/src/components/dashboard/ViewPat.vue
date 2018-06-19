@@ -57,7 +57,7 @@
                   <label>{{testSelected.name}}</label>
                 </div>
                 <div class="col-md-3">
-                  <input type="number" placeholder="Hoeveelheid" v-model="testhoeveelheid" class="form-control" @click.prevent="checkMedicineAmount">
+                  <input type="number" placeholder="Hoeveelheid" v-model="testhoeveelheid" class="form-control" @change="checkMedicineAmount">
                 </div>
               </div>
               <div class="row" style="margin-left: auto; margin-top: 10px;">
