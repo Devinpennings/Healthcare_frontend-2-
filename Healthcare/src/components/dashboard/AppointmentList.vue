@@ -127,10 +127,18 @@
       },
       loadAppointments() {
         this.isBusy = true;
-        this.$store.dispatch("getRequest", 'timeslots/approved?approval=1&doctor_id=' + this.user_id).then((response) => {
-          this.isBusy = false;
-          this.appointments = this.ConvertToDatetime(response);
-        });
+          this.$store.dispatch("getRequest", 'timeslots/approved?approval=1&doctor_id=' + this.user_id).then((response) => {
+            this.isBusy = false;
+            this.appointments = response;
+            let result = [];
+            this.appointments.forEach((x) => {
+              let appointmentDate = new Date(x.startTime);
+              if (this.day.toDateString() === appointmentDate.toDateString()) {
+                result.push(x);
+              }
+            });
+            this.items = this.ConvertToDatetime(result)
+          });
       },
       changeComponent (component) {
         this.$parent.changeComponent(component);
