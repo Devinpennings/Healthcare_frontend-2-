@@ -91,6 +91,7 @@
             email: this.email,
             password: this.password,
           }).then(response => {
+            console.log(response);
             this.$router.push('dashboard');
             this.errors.push("Incorrect wachtwoord of E-mail adres")
           }).catch(error => {

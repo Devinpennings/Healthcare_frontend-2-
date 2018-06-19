@@ -78,7 +78,7 @@
 <script>
 
   import Loader from '../loader.vue'
-
+  import axios from 'axios'
 
   export default{
     name: 'register',
@@ -88,7 +88,8 @@
         wachtwoord: null,
         wachtwoordCheck: null,
         token: this.$route.query,
-        file: "test"
+        file: "",
+        selectedFile: ""
       }
     },
     created (){
@@ -115,13 +116,24 @@
       e.preventDefault();
       },
       register: function() {
-        let link = "patients/activate/" + this.$route.query.token + "?password=" + this.wachtwoord + "&photo=form" + this.file;
-        this.$store.dispatch("putRequest", {
-          url: link,
-        }).then(response => {
-          this.$router.push('login');
-        });
-      },
+      console.log(this.file);
+      console.log(this.selectedFile);
+      var self = this;
+        let formData = new FormData();
+        formData.append("file", this.selectedFile);
+        console.log(this.selectedFile);
+        let link = "http://35.195.241.255:8081/api/patients/activate/" + this.$route.query.token + "?password=" + this.wachtwoord;
+        axios.put( link,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        ).then(function(){
+          self.$router.push('login');
+        })
+        },
       onFileChanged (event) {
         var input = event.target;
         if (input.files && input.files[0]) {
@@ -130,7 +142,9 @@
             this.file = e.target.result;
             console.log(this.file);
           };
+          this.selectedFile = input.files[0];
           reader.readAsDataURL(input.files[0]);
+          console.log(this.selectedFile);
         }
       }
       },
