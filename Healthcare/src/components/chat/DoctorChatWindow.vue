@@ -17,13 +17,16 @@
 
     <div class="messagesWrapper">
       <div class="messages" ref="mess">
+        <div v-if="fullscreen" v-on:click="hidePicture" id="fullscreenPictureBox">
+          <img v-bind:src="image" id="fullscreenPicture">
+        </div>
         <div v-for="message in chat.messages">
           <div class="bubbleme" v-if="message.sender.user_id==user.user_id">
-            <img v-if="message.type==='image'" height="150" v-bind:src="message.message">
+            <img v-if="message.type==='image'" height="150" v-bind:src="message.message" v-on:click="showPicture(message.message)">
             <div v-else>{{ message.message }} </div>
             <div class="timeStamp">{{ message.date.toTimeString().split(':')[0]}}:{{message.date.toTimeString().split(':')[1] }}</div></div>
           <div class="bubbleyou" v-else>
-            <img v-if="message.type==='image'" height="150" v-bind:src="message.message">
+            <img v-if="message.type==='image'" height="150" v-bind:src="message.message" v-on:click="showPicture(message.message)">
             <div v-else>{{ message.message }} </div>
             <div class="timeStamp">{{ message.date.toTimeString().split(':')[0]}}:{{message.date.toTimeString().split(':')[1] }}</div></div>
         </div>
@@ -39,7 +42,7 @@
 </template>
 
 <script>
-import jQuery from 'jQuery'
+// import jQuery from 'jQuery'
 
 export default {
   props: ['pChatId'],
@@ -47,7 +50,9 @@ export default {
     return {
       user: this.$store.getters.user,
       message: '',
-      prevChatId: 0
+      prevChatId: 0,
+      image: null,
+      fullscreen: false,
     }
   },
 
@@ -69,27 +74,49 @@ export default {
           chatId: this.chat.id,
           message: this.message
         })
-        this.message = ''
-        // setTimeout(() => {
-        //   var elem = this.$refs.mess;
-        //   elem.scrollTop = elem.scrollHeight;
-        // }, 200);
+        this.message = '';
+        var self = this;
+        setTimeout(() => {
+          var elem = self.$refs.mess;
+          elem.scrollTop = elem.scrollHeight;
+        }, 200);
       }
+    },
+    showPicture(picture){
+      this.image = picture;
+      this.fullscreen = true;
+    },
+    hidePicture(){
+      this.image = null;
+      this.fullscreen = false;
     },
   },
 
   created(){
     this.prevChatId = this.pChatId;
+
+    var self = this;
+    if(this.chat != undefined){
+      setTimeout(() => {
+        var elem = self.$refs.mess;
+        elem.scrollTop = elem.scrollHeight;
+      }, 50);
+    }
+    // var self = this;
     // setTimeout(() => {
-    //   var elem = this.$refs.mess;
-    //   elem.scrollTop = elem.scrollHeight;
-    // }, 0);
-    //
-    // var intervalID = window.setInterval(() => {
-    //   var elem = this.$refs.mess;
-    //   if(elem.scrollTop + 330 > elem.scrollHeight || this.pChatId != this.prevChatId){
-    //     this.prevChatId = this.pChatId;
+    //   if(self.chat != undefined){
+    //     var elem = self.$refs.mess;
     //     elem.scrollTop = elem.scrollHeight;
+    //   }
+    // }, 0);
+    
+    // var intervalID = window.setInterval(() => {
+    //   if(self.chat != undefined){
+    //     var elem = self.$refs.mess;
+    //     if(elem.scrollTop + 330 > elem.scrollHeight || self.pChatId != self.prevChatId){
+    //       self.prevChatId = self.pChatId;
+    //       elem.scrollTop = elem.scrollHeight;
+    //     }
     //   }
     // }, 200);
   },

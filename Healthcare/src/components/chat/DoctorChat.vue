@@ -3,6 +3,9 @@
       <b-col cols="12" md="3">
         <b-card style="height: 82vh" title="Live chat">
           <b-tabs pills vertical nav-wrapper-class="w-100">
+            <p v-if="chatSession.chats.length == 0">
+              Geen patienten online
+            </p>
             <b-tab v-for="chat in chatSession.chats" 
                    v-bind:data="chat"
                    v-bind:key="chat.id"

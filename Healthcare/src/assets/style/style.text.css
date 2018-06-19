@@ -3049,10 +3049,14 @@ a > code {
 .patientChat{
   top: 100px;
   height: 450px;
-  width: 25vw;
+  width: 600px;
   /*border: 1px solid lightgrey;*/
   box-shadow: 5px 5px 10px 5px lightgrey;
   border-radius: 20px;
+}
+
+.patientChat .messages{
+  margin-bottom: 40px !important;
 }
 
 .chatbar {
@@ -3082,7 +3086,7 @@ a > code {
   overflow-x: hidden;
   overflow-y: scroll;
   height: 100%;
-  padding-bottom: 34px;
+  /* padding-bottom: 34px; */
 }
 
 .chat ::-webkit-scrollbar {
@@ -3107,28 +3111,33 @@ a > code {
 
 .chat .messages .bubbleme {
   position: relative;
-  width: auto;
+  width: fit-content;
+  text-align: left;
   max-width: 75%;
   height: auto;
-  padding: 2px;
+  /* ADD THE OVERFLOW */
   overflow: visible;
-  background: #379392;
+  overflow-y: visible;
+  -ms-overflow-y: visible;
+  background: hsl(179, 46%, 40%);
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
   margin-left: 30px;
+  margin-right: 30px;
   margin-top: 2px;
-  padding: 4px 40px 4px 6px;
+  padding: 4px 32px 4px 4px;
+  right: 0;
   color: white;
-  display: inline-block;
+  
 }
 
 .chat .messages .bubbleyou {
   position: relative;
-  width: min-content;
+  width: fit-content;
   max-width: 75%;
+  text-align: right;
   height: auto;
-  padding: 2px;
   overflow: visible;
   background: grey;
   -webkit-border-radius: 5px;
@@ -3137,7 +3146,7 @@ a > code {
   margin-left: auto;
   margin-right: 30px;
   margin-top: 2px;
-  padding: 4px 40px 4px 6px;
+  padding: 4px 32px 4px 4px;
   right: 0;
   color: white;
   /*  width: min-content;
@@ -3234,4 +3243,27 @@ a > code {
 
 #inputFile {
   width:100%;
+}
+
+#fullscreenPictureBox {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 9999999;
+  position: fixed;
+  align-items: center;
+  align-content: center;
+  background-color: rgba(0,0,0,0.7);
+}
+
+#fullscreenPicture {
+  margin-left: auto;
+  margin-right: auto;
+  position:absolute;
+  top:0;
+  bottom:0;
+  left: 0;
+  right: 0;
+  margin:auto;
 }
