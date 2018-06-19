@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import io from 'socket.io-client';
 
+
 Vue.use(Vuex)
 
 const LOGIN = "LOGIN";
@@ -261,22 +262,18 @@ const Store = new Vuex.Store({
         chats: [],
       }
 
-      let socket = io('37.97.247.182:3000')
+      let socket = io('37.97.247.182:3000', {transports: ['websocket'], upgrade: false})
       chatSession.socket = socket;
 
       socket.on('connect', function() {
         socket.emit('authenticate', user);
-        console.log('user connected');
         chatSession.status = 'connected';
 
         socket.on('disconnect', function() {
-          console.log('user disconnected');
           chatSession.status = 'disconnected';
         });
 
         socket.on('user_joined', (data) => {
-          console.log(data);
-          console.log('user joined id ' + data.user.user_id + ' on room ' + data.room.id);
           data.room.messages.forEach((message) => {
             message.date = new Date(message.date);
           });
@@ -284,14 +281,11 @@ const Store = new Vuex.Store({
         });
 
         socket.on('user_left', (data) => {
-          console.log('user left id ' + data.user.user_id + ' from room ' + data.room.id);
-          console.log(data.room);
           commit(CHAT_UPDATE, data.room);
         });
 
         socket.on('new_message', (message) => {
           message.date = new Date(message.date);
-          console.log('new message ' + message.message + ' from ' + message.sender.user_id + ' on ' + message.chatId)
           commit(NEW_MESSAGE, message);
         });
 
