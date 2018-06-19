@@ -78,7 +78,7 @@
 <script>
 
   import Loader from '../loader.vue'
-
+  import axios from 'axios'
 
   export default{
     name: 'register',
@@ -89,7 +89,7 @@
         wachtwoordCheck: null,
         token: this.$route.query,
         file: "",
-        selectedFile: null
+        selectedFile: ""
       }
     },
     created (){
@@ -116,16 +116,26 @@
       e.preventDefault();
       },
       register: function() {
+      console.log(this.file);
+      console.log(this.selectedFile);
         let formData = new FormData();
-        formData.append("Photo", this.selectedFile);
-        let link = "patients/activate/" + this.$route.query.token + "?password=" + this.wachtwoord;
-        this.$store.dispatch("putRequestPhoto", {
-          url: link,
-          content: formData
-        }).then(response => {
+        formData.append("fileInput", this.selectedFile);
+        console.log(this.selectedFile);
+        let link = "http://35.195.241.255:8081/api/patients/activate/" + this.$route.query.token + "?password=" + this.wachtwoord;
+        axios.put( link,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        ).then(function(){
           this.$router.push('login');
-        });
-      },
+        })
+          .catch(function(){
+            console.log('FAILURE!!');
+          });
+        },
       onFileChanged (event) {
         var input = event.target;
         if (input.files && input.files[0]) {
@@ -135,6 +145,7 @@
           };
           this.selectedFile = input.files[0];
           reader.readAsDataURL(input.files[0]);
+          console.log(this.selectedFile);
         }
       }
       },
