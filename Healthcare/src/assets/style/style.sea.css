@@ -363,7 +363,7 @@ nav.navbar a.menu-btn:hover {
   color: black;
   -webkit-transition: all 0.3s linear;
   transition: all 0.3s linear;
-  z-index: 999;
+  z-index: 80;
   overflow-y: auto;
   /*  Side navbar small ------------------------ */
 }

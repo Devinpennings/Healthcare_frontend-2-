@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import io from 'socket.io-client';
 
+
 Vue.use(Vuex)
 
 const LOGIN = "LOGIN";
@@ -290,7 +291,7 @@ const Store = new Vuex.Store({
         chats: [],
       }
 
-      let socket = io('37.97.247.182:3000')
+      let socket = io('37.97.247.182:3000', {transports: ['websocket'], upgrade: false})
       chatSession.socket = socket;
 
       socket.on('connect', function() {
@@ -316,7 +317,6 @@ const Store = new Vuex.Store({
 
         socket.on('new_message', (message) => {
           message.date = new Date(message.date);
-          console.log('new message ' + message.message + ' from ' + message.sender.user_id + ' on ' + message.chatId)
           commit(NEW_MESSAGE, message);
         });
 
