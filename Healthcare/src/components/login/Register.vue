@@ -15,7 +15,7 @@
               <div class="row py-3">
                 <div class="col">
                   <label class="field field_type2">
-                    <a>Hallo</a> <a>Naam </a> <a>registreer hier uw wachtwoord </a>
+                    <a>Welkom</a> <a>registreer hier uw wachtwoord </a>
                   </label>
                 </div>
             </div>
@@ -41,6 +41,17 @@
                   </label>
                 </div>
             </div>
+              <div class="row py-3">
+                <input
+                  style="display: none"
+                  type="file"
+                  v-on:change="onFileChanged"
+                  ref="fileInput">
+                <button class="buttonaddPhoto" v-on:click="$refs.fileInput.click()" accept="image/*">Kies een foto</button>
+              </div>
+              <div class="row py-3" v-if="file.length > 0">
+                <img class="imageRegister" :src="file">
+              </div>
             <p v-if="errors.length">
               <b>De volgende fouten traden op:</b>
               <ul>
@@ -77,6 +88,7 @@
         wachtwoord: null,
         wachtwoordCheck: null,
         token: this.$route.query,
+        file: "test"
       }
     },
     created (){
@@ -103,18 +115,25 @@
       e.preventDefault();
       },
       register: function() {
-        console.log('sending request with password: ' + this.wachtwoord);
-        let link = "patients/activate/" + this.$route.query.token;
+        let link = "patients/activate/" + this.$route.query.token + "?password=" + this.wachtwoord + "&photo=form" + this.file;
         this.$store.dispatch("putRequest", {
           url: link,
-          body: {
-            password: this.wachtwoord
-          }
         }).then(response => {
           this.$router.push('login');
         });
+      },
+      onFileChanged (event) {
+        var input = event.target;
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = (e) => {
+            this.file = e.target.result;
+            console.log(this.file);
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
       }
-    },
+      },
     components: {
       'loader': Loader
     }

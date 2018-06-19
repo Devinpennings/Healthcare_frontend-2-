@@ -43,7 +43,7 @@
             </b-card>
           </template>
           <template slot="actions" slot-scope="row">
-            <b-form-checkbox :value="row.item" :id="row.item.id" v-model="testSelected" v-on:change="selectMedicine(row.item.id)"></b-form-checkbox>
+            <b-form-checkbox :value="row.item"  v-model="testSelected" v-on:change="selectMedicine(row.item.id)"></b-form-checkbox>
           </template>
         </b-table>
       </form>
@@ -57,7 +57,7 @@
                   <label>{{testSelected.name}}</label>
                 </div>
                 <div class="col-md-3">
-                  <input type="number" placeholder="Hoeveelheid" v-model="testhoeveelheid" class="form-control" @click.prevent="checkMedicineAmount">
+                  <input type="number" placeholder="Hoeveelheid" v-model="testhoeveelheid" class="form-control" @change="checkMedicineAmount">
                 </div>
               </div>
               <div class="row" style="margin-left: auto; margin-top: 10px;">
@@ -146,7 +146,6 @@
           actions: {label: 'Acties'}
         },
         testFields: {
-          id: {label: 'ID', sortable: true},
           name: {label: 'Naam', sortable: true},
           stock: {label: "Op voorraad", sortable: true},
           actions: {label: ''},
@@ -183,8 +182,6 @@
     },
     methods: {
       selectMedicine(object) {
-        console.log("hoi");
-        console.log(object);
         this.testnaam = object.name;
       },
       deletePatient(patient) {
@@ -192,27 +189,25 @@
         console.log(patient);
         this.$store.dispatch('deleteRequest', {
           url: 'patients/' + patient,
-        })
+        }).then(response  => {
+          this.reloadPatients();
+        });
       },
       createPrescription() {
-        console.log(this.testSelected);
-        console.log(this.testpatient);
-        console.log(this.testhoeveelheid);
         this.$store.dispatch('postRequest', {
           url: 'medicines/order/' + this.testSelected.id + '?quantity=' + this.testhoeveelheid + '&patient_id=' + this.testpatient + '&instructions=' + this.testNote,
         })
       },
       getAge(age) {
-        var d = new Date(age); // The 0 there is the key, which sets the date to the epoch
-        console.log(d)
+        let d = new Date(age); // The 0 there is the key, which sets the date to the epoch
         return d.toLocaleDateString()
       },
       getItems() {
         return this.items;
       },
       newDiagnose() {
-        this.isBusy = true
-        console.log(this.patient.user_id)
+        this.isBusy = true;
+        console.log(this.patient.user_id);
         this.$store.dispatch('postRequest', {
           url: 'patients/dossier/' + this.patient.user_id,
           body: {
@@ -229,15 +224,17 @@
       },
       showTestModal(patient) {
         this.testpatient = patient;
-        this.isBusy = true;
+        //this.isBusy = true;
+        //var self = this;
         this.$store.dispatch("getRequest", "medicines").then(response => {
           this.isBusy = false;
           console.log(response);
           // this.user = response;
           this.testMedicijnen = response;
           this.isLoading = false;
-          this.$root.$emit('bv::show::modal', 'medicijnVoorschrijven')
         });
+          this.$root.$emit('bv::show::modal', 'medicijnVoorschrijven')
+
       },
       changeComponent(component) {
         this.$parent.changeComponent(component);
@@ -263,6 +260,15 @@
           entries[index].age = new Date( parseFloat( entries[index].age)).toLocaleDateString();
         }
         return entries;
+      },
+      reloadPatients(){
+        this.isBusy = true;
+        this.$store.dispatch("getRequest", 'patients').then((response) => {
+          this.isBusy = false;
+          this.patients = this.dateConverter(response);
+          this.totalRows = this.patients.length;
+          this.patients = response
+        });
       }
     },
   }
